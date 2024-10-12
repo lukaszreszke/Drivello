@@ -1,0 +1,43 @@
+﻿version: '3.8'
+services:
+  webapplication1:
+    image: webapplication1
+    build:
+      context: .
+      dockerfile: WebApplication1/Dockerfile
+    depends_on:
+      - drivello-db
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=drivello-db;Database=drivello;Username=postgres;Password=yourpassword
+
+  loyaltello:
+    image: loyaltello
+    build:
+      context: .
+      dockerfile: Loyaltello/Dockerfile
+    depends_on:
+      - loyaltello-db
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=loyaltello-db;Database=loyaltello;Username=postgres;Password=yourpassword
+
+  drivello-db:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=drivello
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=drivello
+    volumes:
+      - drivello-data:/var/lib/postgresql/data
+
+  loyaltello-db:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=loyaltello
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=loyaltello
+    volumes:
+      - loyaltello-data:/var/lib/postgresql/data
+
+volumes:
+  drivello-data:
+  loyaltello-data:
