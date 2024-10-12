@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drivello", "Drivello.csproj", "{9B140821-2A09-4A88-9D14-48449A5A1DC0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrivelloTests", "DrivelloTests\DrivelloTests.csproj", "{269443CD-2762-4B50-8E99-3E3ED0BEA68B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9B140821-2A09-4A88-9D14-48449A5A1DC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B140821-2A09-4A88-9D14-48449A5A1DC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B140821-2A09-4A88-9D14-48449A5A1DC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B140821-2A09-4A88-9D14-48449A5A1DC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{269443CD-2762-4B50-8E99-3E3ED0BEA68B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{269443CD-2762-4B50-8E99-3E3ED0BEA68B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{269443CD-2762-4B50-8E99-3E3ED0BEA68B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{269443CD-2762-4B50-8E99-3E3ED0BEA68B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
