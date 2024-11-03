@@ -13,7 +13,6 @@ namespace IntegrationTests;
 
 public class TestFixture : IAsyncLifetime
 {
-    private Respawner _respawner = null!;
     private NpgsqlConnection _dbConnection;
     public PostgreSqlContainer DrivelloDbContainer { get; set; }
     public PostgreSqlContainer LoyaltelloDbContainer { get; set; }
@@ -113,18 +112,8 @@ public class TestFixture : IAsyncLifetime
         
         _dbConnection = new NpgsqlConnection(DrivelloDbContainer.GetConnectionString());
         await _dbConnection.OpenAsync();
-        _respawner = await Respawner.CreateAsync(_dbConnection, new RespawnerOptions
-        {
-            DbAdapter = DbAdapter.Postgres,
-            SchemasToInclude = new[] { "public" },
-        });
     }
     
-    public async Task ResetDatabaseAsync()
-    {
-        await _respawner.ResetAsync(_dbConnection);
-    }
-
     private async Task WaitForService(HttpClient client, string healthCheckEndpoint)
     {
         var retryPolicy = Policy

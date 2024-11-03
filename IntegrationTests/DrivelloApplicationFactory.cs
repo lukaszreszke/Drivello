@@ -15,7 +15,6 @@ namespace IntegrationTests
 {
     public class DrivelloApplicationFactory : WebApplicationFactory<Program> 
     {
-        private Respawner _respawner = null!;
         private readonly PostgreSqlContainer _dbContainer;
         private readonly IConfiguration _configuration;
         private readonly int _port;

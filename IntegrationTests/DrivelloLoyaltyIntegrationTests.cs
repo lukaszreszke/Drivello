@@ -12,12 +12,10 @@ namespace Drivello.IntegrationTests;
 public class DrivelloLoyaltyIntegrationTests : IClassFixture<TestFixture>, IAsyncLifetime
 {
     private readonly DrivelloApplicationFactory _drivelloFactory;
-    private readonly Func<Task> _resetDatabaseAsync;
 
     public DrivelloLoyaltyIntegrationTests(TestFixture fixture)
     {
         _drivelloFactory = fixture.DrivelloFactory;
-        _resetDatabaseAsync = fixture.ResetDatabaseAsync;
     }
 
     [Fact]
@@ -99,8 +97,8 @@ public class DrivelloLoyaltyIntegrationTests : IClassFixture<TestFixture>, IAsyn
         return Task.CompletedTask;
     }
 
-    public async Task DisposeAsync()
+    public Task DisposeAsync()
     {
-        await _resetDatabaseAsync();
+        return Task.CompletedTask;
     }
 }
