@@ -60,6 +60,28 @@ public class LoyaltyController : ControllerBase
         var users = await _context.Users.ToListAsync();
         return Ok(users.Select(u => new { UserId = u.Id, Points = u.LoyaltyPoints }));
     }
+    
+    [HttpPost("/api/loyalty/decrease_points")]
+    public async Task<ActionResult> DecreasePoints(DecreasePointsRequest request)
+    {
+        var user = await _context.Users.FindAsync(request.UserId);
+        if (user == null)
+        {
+            return NotFound($"User {request.UserId} not found");
+        }
+
+        user.LoyaltyPoints -= request.PointsToDecrease;
+        await _context.SaveChangesAsync();
+
+        await _messageSession.Publish(new LoyaltyPointsEarned
+        {
+            UserId = request.UserId,
+            Points = request.PointsToDecrease,
+        });
+
+        return Ok(new PointsResponse(user.LoyaltyPoints));
+    }
+
 
     [HttpPost("/api/loyalty/seed")]
     public async Task<ActionResult> Seed()
@@ -76,5 +98,11 @@ public class LoyaltyController : ControllerBase
     {
         public int UserId { get; set; }
         public int Points { get; set; }
+    }
+
+    public class DecreasePointsRequest
+    {
+        public int UserId { get; set; }
+        public int PointsToDecrease { get; set; }
     }
 }
