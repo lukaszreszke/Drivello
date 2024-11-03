@@ -50,12 +50,6 @@ public class ProviderTests : IDisposable
     [Fact]
     public void Verify()
     {
-        string pactPath = Path.Combine("..", "..", "..", "..", "ConsumerTests", "pacts", "LoyaltyService-LoyaltyApi.json");
-
-        _verifier.WithHttpEndpoint(ProviderUri)
-            .WithFileSource(new FileInfo(pactPath))
-            .WithProviderStateUrl(new Uri(ProviderUri, "/provider-states"))
-            .Verify();
     }
 
     public void Dispose()

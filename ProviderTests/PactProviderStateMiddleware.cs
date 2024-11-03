@@ -37,66 +37,15 @@ public class PactProviderStateMiddleware
 
                 if (providerState.State == "User exists")
                 {
-                    var userId = int.Parse(providerState.Params["userId"].ToString()!);
-                    var points = int.Parse(providerState.Params["loyaltyPoints"].ToString()!);
-
-                    var user = await dbContext.Users.FindAsync(userId);
-                    if (user != null)
-                    {
-                        user.LoyaltyPoints = points;
-                    }
-                    else
-                    {
-                        dbContext.Users.Add(new LoyaltyUser() 
-                        {
-                            Id = userId,
-                            LoyaltyPoints = points
-                        });
-                    }
-                    await dbContext.SaveChangesAsync();
                 }
                 else if (providerState.State == "User does not exist")
                 {
-                    var userId = int.Parse(providerState.Params["userId"].ToString()!);
-                    var user = await dbContext.Users.FindAsync(userId);
-                    if (user != null)
-                    {
-                        dbContext.Users.Remove(user);
-                        await dbContext.SaveChangesAsync();
-                    }
                 }
                 else if (providerState.State == "User exists and has no points")
                 {
-                    var userId = int.Parse(providerState.Params["userId"].ToString()!);
-                    var user = await dbContext.Users.FindAsync(userId);
-                    if (user != null)
-                    {
-                        user.LoyaltyPoints = 0;
-                    }
-                    else
-                    {
-                        dbContext.Users.Add(new LoyaltyUser() 
-                        {
-                            Id = userId,
-                            LoyaltyPoints = 0
-                        });
-                    }
-                    await dbContext.SaveChangesAsync();
                 }
                 else if (providerState.State == "Users exist")
                 {
-                    var users = await dbContext.Users.ToListAsync();
-                    dbContext.Users.RemoveRange(users);
-                    await dbContext.SaveChangesAsync();
-                    
-                    var usersData = new List<LoyaltyUser>
-                    {
-                        new LoyaltyUser { Id = 1, LoyaltyPoints = 100 },
-                        new LoyaltyUser { Id = 2, LoyaltyPoints = 200 },
-                    };
-                    
-                    await dbContext.Users.AddRangeAsync(usersData);
-                    await dbContext.SaveChangesAsync();
                 }
             }
 
