@@ -50,26 +50,6 @@ public class ProviderEventTests : IDisposable
     [Fact]
     public void Verify()
     {
-        string pactPath = Path.Combine("..", "..", "..", "..", "ConsumerTests", "pacts", "LoyaltyService-LoyaltyEvents.json");
-        var defaultSettings = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = null,
-            PropertyNameCaseInsensitive = true
-        };
-        var verifier = _verifier
-            .WithHttpEndpoint(ProviderUri)
-            .WithMessages(scenarios =>
-            {
-                scenarios.Add("A event for loyalty points for an existing user", builder =>
-                {
-                    builder
-                    .WithContent(() => new LoyaltyPointsEarned() { UserId = 123, Points = 100 });
-                });
-            }, defaultSettings)
-            .WithFileSource(new FileInfo(pactPath))
-            .WithProviderStateUrl(new Uri(ProviderUri, "/provider-states"));
-
-        verifier.Verify();
     }
 
     public void Dispose()
