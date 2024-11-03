@@ -2,11 +2,11 @@ using Shared.Messages;
 
 namespace Loyaltello.EventHandlers
 {
-    public class RentalEndedHandler : IHandleMessages<RentalEnded>
+    public class AddPoints : IHandleMessages<RentalEnded>
     {
         private readonly LoyaltyDbContext _dbContext;
 
-        public RentalEndedHandler(
+        public AddPoints(
             LoyaltyDbContext dbContext)
         {
             _dbContext = dbContext;
