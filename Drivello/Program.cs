@@ -51,10 +51,28 @@ public class Program
         {
             await scooterService.FinishRental(id);
         });
-
+        
+        app.MapPost("/users/register", async ([FromBody] RegistrationRequest request, [FromServices] RegistrationService registrationService) =>
+        {
+            registrationService.RegisterUser(request.Email, request.Password, request.Name);
+            return Task.CompletedTask;
+        });
+        
+        app.MapPost("/scooters/new", async ([FromBody] decimal basePricePerMinute, [FromServices] RegistrationService registrationService) =>
+        {
+            registrationService.RegisterNewScooter(basePricePerMinute);
+            return Task.CompletedTask;
+        });
         
         app.Run();
     }
+}
+
+public record RegistrationRequest
+{
+    public string Email { get; set; }
+    public string Password { get; set; }
+    public string Name { get; set; }
 }
 
 public record RentalRequest(int UserId);
