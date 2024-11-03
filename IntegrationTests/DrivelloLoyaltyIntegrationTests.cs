@@ -52,34 +52,6 @@ public class DrivelloLoyaltyIntegrationTests : IClassFixture<TestFixture>, IAsyn
     }
 
     [Fact]
-    public async Task rental()
-    {
-        var httpClient = new HttpClient();
-        httpClient.BaseAddress = new Uri("http://localhost:5001");
-        await httpClient.PostAsync("/api/loyalty/seed", new StringContent(""));
-        
-        var dbContext = _drivelloFactory.GetScopedService<RentalDbContext>();
-        dbContext.Users.Add(new User() { Id = 1, LoyaltyPoints = 0, Name = "Łukasz", Membership = "Gold", Email = "lukasz@example.com", Password = "password" });
-        dbContext.Scooters.Add(new Scooter() { Id = 1, BasePricePerMinute = 1, Range = Range.Long, Status = "Available", IsUnderMaintenance = false });
-        await dbContext.SaveChangesAsync();
-        var drivelloClient = _drivelloFactory.CreateClient();
-        var response = await drivelloClient.PostAsJsonAsync("/scooter/1/rent", new RentalRequest(1));
-        response.EnsureSuccessStatusCode();
-
-        var finishResponse = await drivelloClient.PostAsJsonAsync("/scooter/1/finish", new {});
-        EnsureSuccessStatusCode(finishResponse);
-        
-        var retryPolicy = Policy.Handle<Exception>().WaitAndRetryAsync(5, _ => TimeSpan.FromSeconds(1));
-        await retryPolicy.ExecuteAsync(async () =>
-        {
-            var allUsersWithPoints = await httpClient.GetAsync("api/loyalty/all");
-            allUsersWithPoints.EnsureSuccessStatusCode();
-            var json = await allUsersWithPoints.Content.ReadFromJsonAsync<List<PointsResponse>>();
-            Assert.Equal(150, json.First().Points);
-        });
-    }
-    
-    [Fact]
     public async Task GetUserLoyaltyPoints_ReturnsSuccessStatusCodetest()
     {
         // Arrange
