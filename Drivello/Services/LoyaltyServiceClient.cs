@@ -44,8 +44,19 @@ public class LoyaltyServiceClient : ILoyaltyService
     {
         var response = await _httpClient.GetAsync($"{_loyaltyApiBaseUrl}/api/loyalty/all");
         var content = await response.Content.ReadAsStringAsync();
-        
+
         return JsonSerializer.Deserialize<IList<PointsResponse>>(content);
+    }
+
+    public async Task TransferLoyaltyPoints(int giverId, int receiverId, int pointsToTransfer)
+    {
+        await _httpClient.PostAsJsonAsync($"{_loyaltyApiBaseUrl}/api/loyalty/transfer_points",
+            new
+            {
+                from = giverId,
+                to = receiverId,
+                points = pointsToTransfer
+            });
     }
 }
 

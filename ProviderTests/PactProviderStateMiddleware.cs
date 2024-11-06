@@ -98,6 +98,21 @@ public class PactProviderStateMiddleware
                     await dbContext.Users.AddRangeAsync(usersData);
                     await dbContext.SaveChangesAsync();
                 }
+                else if (providerState.State == "Transfer")
+                {
+                    dbContext.Users.RemoveRange(await dbContext.Users.ToListAsync());
+                    
+                    var giverId = int.Parse(providerState.Params["giverId"].ToString()!);
+                    var receiverId = int.Parse(providerState.Params["receiverId"].ToString()!);
+                    
+                    dbContext.Users.AddRange(new List<LoyaltyUser>
+                    {
+                        new LoyaltyUser { Id = giverId, LoyaltyPoints = 100 },
+                        new LoyaltyUser { Id = receiverId, LoyaltyPoints = 0 }
+                    });
+                    
+                    await dbContext.SaveChangesAsync();
+                }
             }
 
             await context.Response.WriteAsJsonAsync(String.Empty);

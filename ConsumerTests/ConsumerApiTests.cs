@@ -128,6 +128,36 @@ public class ConsumerApiTests
     }
 
     [Fact]
+    public async Task transfer_loyalty_points_from_existing_user_to_existing_user()
+    {
+        // Arrange
+        const int giverId = 777;
+        const int receiverId = 888;
+        const int pointsToTransfer = 100;
+        
+        _pactBuilder
+            .UponReceiving("A request to transfer loyalty points for an existing user")
+            .Given("Transfer", new Dictionary<string, string>
+            {
+                { "giverId", giverId.ToString() },
+                { "giverPoints", "100" },
+                { "receiverId", receiverId.ToString() },
+                { "receiverPoints", "0" }
+            })
+            .WithRequest(HttpMethod.Post, $"/api/loyalty/transfer_points").WithJsonBody(new TypeMatcher(new { from = giverId, to = receiverId, points = pointsToTransfer }))
+            .WillRespond()
+            .WithStatus(HttpStatusCode.OK)
+            .WithHeader("Content-Type", "application/json");
+
+        await _pactBuilder.VerifyAsync(async ctx =>
+        {
+            using var httpClient = _mockClientFactory.CreateClient();
+            var loyaltyService = new LoyaltyServiceClient(httpClient, _configuration);
+            await loyaltyService.TransferLoyaltyPoints(giverId, receiverId, pointsToTransfer);
+        });
+    }
+
+    [Fact]
     public async Task GetPointsForAllUsers_ReturnsPointsForAllUsers()
     {
     }

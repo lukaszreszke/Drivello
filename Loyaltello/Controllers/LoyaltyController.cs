@@ -91,6 +91,21 @@ public class LoyaltyController : ControllerBase
         await _context.SaveChangesAsync();
         return Ok();
     }
+    
+    [HttpPost("/api/loyalty/transfer_points")]
+    public async Task<ActionResult> TransferPoints(TransferPointsRequest request)
+    {
+        var giver = await _context.Users.FindAsync(request.From);
+        var receiver = await _context.Users.FindAsync(request.To);
+
+        giver.LoyaltyPoints -= request.Points;
+        receiver.LoyaltyPoints += request.Points;
+        await _context.SaveChangesAsync();
+
+        HttpContext.Response.Headers.Append("Content-Type", "application/json");
+        
+        return Ok();
+    }
 
     public record PointsResponse (int Points);
     
@@ -105,4 +120,11 @@ public class LoyaltyController : ControllerBase
         public int UserId { get; set; }
         public int PointsToDecrease { get; set; }
     }
+}
+
+public class TransferPointsRequest
+{
+    public int From { get; set; }
+    public int To { get; set; }
+    public int Points { get; set; }
 }
