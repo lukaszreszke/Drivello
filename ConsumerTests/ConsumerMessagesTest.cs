@@ -33,5 +33,44 @@ public class ConsumerMessagesTest
     [Fact]
     public async Task GetLoyaltyPoints_PublishesEvent_WhenUserExists()
     {
+        // Arrange
+        const int userId = 123;
+        const int expectedPoints = 100;
+
+        _pactBuilder
+            .ExpectsToReceive("A event for loyalty points for an existing user")
+            .Given("User exists", new Dictionary<string, string>
+            {
+                { "userId", userId.ToString() },
+                { "loyaltyPoints", expectedPoints.ToString() }
+            }).WithJsonContent(new
+            {
+                UserId = 123,
+                Points = 100
+            }).Verify<LoyaltyPointsEarned>(message =>
+            {
+                Assert.Equal(123, message.UserId);
+                Assert.Equal(100, message.Points);
+                
+                var dbContext = new RentalDbContext(new DbContextOptionsBuilder<RentalDbContext>().UseInMemoryDatabase("RentalDb").Options);
+                var messageHandleContext = new TestableMessageHandlerContext();
+
+                dbContext.Users.Add(new User()
+                {
+                    Id = 123,
+                    LoyaltyPoints = 0,
+                    Password = "password",
+                    Email = "lukasz@example.com",
+                    Name = "Lukasz",
+                    Membership = "Gold"
+                });
+                dbContext.SaveChanges();
+                
+                var loyaltyPointsEarned = new LoyaltyPointsEarnedHandler(dbContext);
+                loyaltyPointsEarned.Handle(message, messageHandleContext).Wait();
+
+                var user = dbContext.Users.Find(userId);
+                Assert.Equal(expectedPoints, user.LoyaltyPoints);
+            });
     }
 }
