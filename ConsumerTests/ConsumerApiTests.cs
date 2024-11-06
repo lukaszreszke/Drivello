@@ -103,6 +103,28 @@ public class ConsumerApiTests
     [Fact]
     public async Task EarnLoyaltyPoints_WhenUserExists_ReturnsOk()
     {
+        // Arrange
+        const int userId = 123;
+
+        _pactBuilder
+            .UponReceiving("A request to earn loyalty points for an existing user")
+            .Given("User exists and has no points", new Dictionary<string, string>
+            {
+                { "userId", userId.ToString() },
+                { "loyaltyPoints", "100" }
+            })
+            .WithRequest(HttpMethod.Post, $"/api/loyalty/earn_points").WithJsonBody(new TypeMatcher(new { userId, points = 100 }))
+            .WillRespond()
+            .WithStatus(HttpStatusCode.OK)
+            .WithJsonBody(new { Points = 100 })
+            .WithHeader("Content-Type", "application/json");
+
+        await _pactBuilder.VerifyAsync(async _ =>
+        {
+            using var httpClient = _mockClientFactory.CreateClient();
+            var loyaltyService = new LoyaltyServiceClient(httpClient, _configuration);
+            await loyaltyService.EarnLoyaltyPoints(userId, 100);
+        });
     }
 
     [Fact]
